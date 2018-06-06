@@ -16,13 +16,24 @@ import com.modulizedatasource.datamodule.ModuleDataNode;
 public class ModuleDataNodeExampleHeader extends ModuleDataNode<HeaderModel> {
 
     @Override
-    public View innerGetView(int index, Context context) {
-        ViewHolderStyle1 viewHolder = (ViewHolderStyle1) getPageContextModel().mViewCacheManage.getViewHolder(ViewHolderStyle1.class.getName());
+    public View innerGetView(final View convertView, int index, Context context) {
+        ViewHolderStyle1 viewHolder;
+        if (convertView != null &&
+                convertView.getTag() instanceof ViewHolderStyle1) {
+            viewHolder = (ViewHolderStyle1) convertView.getTag();
+        } else {
+            viewHolder = (ViewHolderStyle1) getPageContextModel().mViewCacheManage.getViewHolder(ViewHolderStyle1.class.getName());
+        }
 
         HeaderModel data = getItemDataLocally(index);
         viewHolder.titleTextView.setText(data.title + "\nnow opening state is: " + data.isOpen);
         viewHolder.mContentView.setBackgroundColor(Color.RED);
 
         return viewHolder.mContentView;
+    }
+
+    @Override
+    protected String getViewType(int index) {
+        return ViewHolderStyle1.class.getName();
     }
 }

@@ -19,8 +19,14 @@ import com.modulizedatasource.datamodule.ModuleDataNode;
 public class MiddleModuleChildNodeStyle1 extends ModuleDataNode<String> {
 
     @Override
-    public View innerGetView(int index, Context context) {
-        ViewHolderStyle2 viewHolder = (ViewHolderStyle2) getPageContextModel().mViewCacheManage.getViewHolder(ViewHolderStyle2.class.getName());
+    public View innerGetView(final View convertView,int index, Context context) {
+        ViewHolderStyle2 viewHolder;
+        if (convertView != null &&
+                convertView.getTag() instanceof ViewHolderStyle2) {
+            viewHolder = (ViewHolderStyle2) convertView.getTag();
+        } else {
+            viewHolder = (ViewHolderStyle2) getPageContextModel().mViewCacheManage.getViewHolder(ViewHolderStyle2.class.getName());
+        }
 
         ImageView imageView = viewHolder.image;
         imageView.setImageResource(R.drawable.a);
@@ -34,5 +40,10 @@ public class MiddleModuleChildNodeStyle1 extends ModuleDataNode<String> {
         textView.setText(ssb);
 
         return viewHolder.mContentView;
+    }
+
+    @Override
+    protected String getViewType(int index) {
+        return ViewHolderStyle2.class.getName();
     }
 }

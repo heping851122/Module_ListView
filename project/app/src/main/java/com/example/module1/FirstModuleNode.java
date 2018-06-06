@@ -27,11 +27,23 @@ public class FirstModuleNode extends ModuleDataNode<String> {
     }
 
     @Override
-    public View innerGetView(final int localIndex, final Context context) {
-        ViewHolderStyle3 viewHolderStyle3 = (ViewHolderStyle3) getPageContextModel().mViewCacheManage.getViewHolder(ViewHolderStyle3.class.getName());
+    public View innerGetView(final View convertView, final int localIndex, final Context context) {
+        ViewHolderStyle3 viewHolderStyle3;
+        if (convertView != null &&
+                convertView.getTag() instanceof ViewHolderStyle3) {
+            viewHolderStyle3 = (ViewHolderStyle3) convertView.getTag();
+        } else {
+            viewHolderStyle3 = (ViewHolderStyle3) getPageContextModel().mViewCacheManage.getViewHolder(ViewHolderStyle3.class.getName());
+        }
+
         viewHolderStyle3.mTextView.setText(this.getItemDataLocally(localIndex));
 
         return viewHolderStyle3.mContentView;
+    }
+
+    @Override
+    protected String getViewType(int index) {
+        return ViewHolderStyle3.class.getName();
     }
 
     @Override

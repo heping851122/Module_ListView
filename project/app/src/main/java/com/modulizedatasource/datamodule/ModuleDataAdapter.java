@@ -48,7 +48,19 @@ public class ModuleDataAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return mContext.mViewCacheManage.getViewTypeCount();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        final String viewType = mTopModuleDataNode.getViewType(position);
+
+        return mContext.mViewCacheManage.getViewType(viewType);
     }
 
     @Override
@@ -57,15 +69,23 @@ public class ModuleDataAdapter extends BaseAdapter {
             return null;
         }
 
-        if (mContext != null) {
-            mContext.mViewCacheManage.recycleView(convertView);
-        }
-
-        View view = mTopModuleDataNode.getView(position, parent.getContext());
+        View view = mTopModuleDataNode.getView(convertView, position, parent.getContext());
 
         if (view == null) {
             Log.e("tony", "ModuleDataAdapter get null view");
             view = new View(mContext.mContext);
+        }
+
+        if (convertView != null &&
+                convertView == view) {
+            Log.e("tony", "ModuleDataAdapter get view reused");
+        } else {
+            final String viewType = mTopModuleDataNode.getViewType(position);
+            if (convertView == null) {
+                Log.e("tony", "ModuleDataAdapter get view no reused 001 " + viewType);
+            } else if (convertView != view) {
+                Log.e("tony", "ModuleDataAdapter get view no reused 002 " + viewType);
+            }
         }
 
         return view;

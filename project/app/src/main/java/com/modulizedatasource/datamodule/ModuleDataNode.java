@@ -16,7 +16,6 @@ import java.util.List;
  */
 
 public abstract class ModuleDataNode<T> {
-
     public interface onItemClickListener {
         void onItemClickEvent(int index, ModuleDataNode node);
     }
@@ -56,13 +55,15 @@ public abstract class ModuleDataNode<T> {
         return this.mParent;
     }
 
-    protected View getView(final int index, final Context context) {
+    protected View getView(final View convertView,final int index, final Context context) {
         final int realIndex = getLocalIndex(index);
 
-        return innerGetView(realIndex, context);
+        return innerGetView(convertView,realIndex, context);
     }
 
-    public abstract View innerGetView(final int localIndex, final Context context);
+    public abstract View innerGetView(final View convertView,final int localIndex, final Context context);
+
+    protected abstract String getViewType(final int index);
 
     public int getCount() {
         return mCount;

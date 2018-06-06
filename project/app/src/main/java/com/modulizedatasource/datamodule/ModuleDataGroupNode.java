@@ -66,14 +66,14 @@ public class ModuleDataGroupNode extends ModuleDataNode implements CoveredViewIn
     }
 
     @Override
-    protected final View getView(final int index, final Context context) {
+    protected final View getView(final View convertView, final int index, final Context context) {
         for (ModuleDataNode node : mChildList) {
             if (node == null) {
                 continue;
             }
 
             if (node.isIndexInRange(index)) {
-                return node.getView(index, context);
+                return node.getView(convertView, index, context);
             }
         }
 
@@ -81,8 +81,23 @@ public class ModuleDataGroupNode extends ModuleDataNode implements CoveredViewIn
     }
 
     @Override
-    public View innerGetView(int index, Context context) {
+    public View innerGetView(final View convertView, int index, Context context) {
         return null;
+    }
+
+    @Override
+    protected String getViewType(final int index) {
+        for (ModuleDataNode node : mChildList) {
+            if (node == null) {
+                continue;
+            }
+
+            if (node.isIndexInRange(index)) {
+                return node.getViewType(index);
+            }
+        }
+
+        return "";
     }
 
     public void addChildList(final List<ModuleDataNode> childList) {

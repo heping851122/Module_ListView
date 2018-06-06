@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -18,8 +20,9 @@ import java.util.List;
  */
 
 public abstract class ViewCacheManagerBaseClass {
-    protected final HashMap<String, Class<? extends BaseViewHolder>> mViewCacheTypeMap = new HashMap<>(20);
+    protected final HashMap<String, Class<? extends BaseViewHolder>> mViewCacheTypeMap = new LinkedHashMap<>(20);
     protected final HashMap<String, ArrayList<BaseViewHolder>> mViewHolderCacheMap = new HashMap<>(20);
+    protected final HashMap<String, Integer> mViewTypeMap = new HashMap<>(20);
 
     protected String tag = this.getClass().getName();
     protected Context mContext;
@@ -28,6 +31,15 @@ public abstract class ViewCacheManagerBaseClass {
     public void init(final Context context, final LayoutInflater layoutInflater) {
         this.mContext = context;
         this.mLayoutInflater = layoutInflater;
+        refreshViewType();
+    }
+
+    public int getViewTypeCount() {
+        return mViewTypeMap.size();
+    }
+
+    public int getViewType(String key) {
+        return mViewTypeMap.get(key);
     }
 
     public BaseViewHolder getViewHolder(final String key) {
@@ -141,6 +153,16 @@ public abstract class ViewCacheManagerBaseClass {
         }
 
         return null;
+    }
+
+    private void refreshViewType() {
+        mViewTypeMap.clear();
+
+        int i = 0;
+        for (Map.Entry<String, Class<? extends BaseViewHolder>> entry : mViewCacheTypeMap.entrySet()) {
+            mViewTypeMap.put(entry.getKey(), i);
+            i++;
+        }
     }
 
 }
