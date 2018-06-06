@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.modulizedatasource.datamodule.coverview.CoveredViewInterface;
 import com.modulizedatasource.datamodule.coverview.FetchCoveredViewResult;
+import com.modulizedatasource.viewcache.BaseViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,8 +82,8 @@ public class ModuleDataGroupNode extends ModuleDataNode implements CoveredViewIn
     }
 
     @Override
-    public View innerGetView(final View convertView, int index, Context context) {
-        return null;
+    protected void bindData(BaseViewHolder viewHolder, int localIndex) {
+        //do noting
     }
 
     @Override

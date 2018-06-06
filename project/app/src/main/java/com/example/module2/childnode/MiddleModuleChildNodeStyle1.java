@@ -1,9 +1,7 @@
 package com.example.module2.childnode;
 
-import android.content.Context;
 import android.text.SpannableStringBuilder;
 import android.text.style.TextAppearanceSpan;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,34 +14,19 @@ import com.modulizedatasource.datamodule.ModuleDataNode;
  * Created by tony on 2018/5/9.
  */
 
-public class MiddleModuleChildNodeStyle1 extends ModuleDataNode<String> {
+public class MiddleModuleChildNodeStyle1 extends ModuleDataNode<String, ViewHolderStyle2> {
 
     @Override
-    public View innerGetView(final View convertView,int index, Context context) {
-        ViewHolderStyle2 viewHolder;
-        if (convertView != null &&
-                convertView.getTag() instanceof ViewHolderStyle2) {
-            viewHolder = (ViewHolderStyle2) convertView.getTag();
-        } else {
-            viewHolder = (ViewHolderStyle2) getPageContextModel().mViewCacheManage.getViewHolder(ViewHolderStyle2.class.getName());
-        }
-
+    protected void bindData(ViewHolderStyle2 viewHolder, int localIndex) {
         ImageView imageView = viewHolder.image;
         imageView.setImageResource(R.drawable.a);
 
         TextView textView = viewHolder.title;
         SpannableStringBuilder ssb = new SpannableStringBuilder("");
         ssb.append("MiddleModuleChildNodeStyle1 \n");
-        ssb.append(this.getItemDataLocally(index));
-        TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(context, R.style.text_16_f5d222);
+        ssb.append(getItemDataLocally(localIndex));
+        TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(getPageContextModel().mContext, R.style.text_16_f5d222);
         ssb.setSpan(textAppearanceSpan, 0, ssb.length(), SpannableStringBuilder.SPAN_INCLUSIVE_EXCLUSIVE);
         textView.setText(ssb);
-
-        return viewHolder.mContentView;
-    }
-
-    @Override
-    protected String getViewType(int index) {
-        return ViewHolderStyle2.class.getName();
     }
 }

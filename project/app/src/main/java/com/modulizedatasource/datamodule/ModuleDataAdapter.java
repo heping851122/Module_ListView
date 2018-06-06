@@ -1,11 +1,11 @@
 package com.modulizedatasource.datamodule;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.modulizedatasource.model.PageContextModel;
+import com.tools.LogUtil;
 
 
 /**
@@ -72,19 +72,19 @@ public class ModuleDataAdapter extends BaseAdapter {
         View view = mTopModuleDataNode.getView(convertView, position, parent.getContext());
 
         if (view == null) {
-            Log.e("tony", "ModuleDataAdapter get null view");
+            LogUtil.printExceptionLog("ModuleDataAdapter get null view");
             view = new View(mContext.mContext);
         }
 
         if (convertView != null &&
                 convertView == view) {
-            Log.e("tony", "ModuleDataAdapter get view reused");
+            LogUtil.printLog("ModuleDataAdapter get view reused");
         } else {
             final String viewType = mTopModuleDataNode.getViewType(position);
             if (convertView == null) {
-                Log.e("tony", "ModuleDataAdapter get view no reused 001 " + viewType);
+                LogUtil.printLog("ModuleDataAdapter get view no reused 001 " + viewType);
             } else if (convertView != view) {
-                Log.e("tony", "ModuleDataAdapter get view no reused 002 " + viewType);
+                LogUtil.printExceptionLog("ModuleDataAdapter get view no reused 002 " + viewType);
             }
         }
 

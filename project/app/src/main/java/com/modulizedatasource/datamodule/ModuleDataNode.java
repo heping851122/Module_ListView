@@ -1,12 +1,15 @@
 package com.modulizedatasource.datamodule;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 
 import com.modulizedatasource.model.PageContextModel;
+import com.modulizedatasource.viewcache.BaseViewHolder;
+import com.tools.LogUtil;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +18,14 @@ import java.util.List;
  * Created by tony on 2018/5/8.
  */
 
-public abstract class ModuleDataNode<T> {
+public abstract class ModuleDataNode<T, V extends BaseViewHolder> {
     public interface onItemClickListener {
         void onItemClickEvent(int index, ModuleDataNode node);
     }
 
     public final static int sInvalidIndex = -1;
 
+    private Class<V> mViewHolderClass = null;
     private final List<T> mDataList = new ArrayList<>();
     private PageContextModel mContext;
     protected int mStartIndex = sInvalidIndex;
@@ -45,7 +49,7 @@ public abstract class ModuleDataNode<T> {
                 mContext = getRootNode().mContext;
             }
         } catch (Exception e) {
-            Log.e("tony", "Exception getPageContextModel null");
+            LogUtil.printExceptionLog("getPageContextModel null");
         }
 
         return mContext;
@@ -55,15 +59,41 @@ public abstract class ModuleDataNode<T> {
         return this.mParent;
     }
 
-    protected View getView(final View convertView,final int index, final Context context) {
+    protected View getView(final View convertView, final int index, final Context context) {
         final int realIndex = getLocalIndex(index);
 
-        return innerGetView(convertView,realIndex, context);
+        return innerGetView(convertView, realIndex, context);
     }
 
-    public abstract View innerGetView(final View convertView,final int localIndex, final Context context);
+    private View innerGetView(final View convertView, final int localIndex, final Context context) {
+        Class<V> clazzType = getViewHolderClassType();
+        V viewHolder;
+        if (convertView != null &&
+                clazzType.isInstance(convertView.getTag())) {
+            viewHolder = (V) convertView.getTag();
+        } else {
+            viewHolder = (V) getPageContextModel().mViewCacheManage.getViewHolder(getViewType(localIndex));
+        }
 
-    protected abstract String getViewType(final int index);
+        if (viewHolder != null) {
+            bindData(viewHolder, localIndex);
+            return viewHolder.mContentView;
+        } else {
+            return null;
+        }
+    }
+
+    protected abstract void bindData(V viewHolder, final int localIndex);
+
+    protected String getViewType(final int index) {
+        Class<V> clazzType = getViewHolderClassType();
+
+        if (clazzType == null) {
+            return "";
+        } else {
+            return clazzType.getName();
+        }
+    }
 
     public int getCount() {
         return mCount;
@@ -165,4 +195,30 @@ public abstract class ModuleDataNode<T> {
         return topperNode;
     }
 
+    private Class<V> getViewHolderClassType() {
+        if (mViewHolderClass != null) {
+            return mViewHolderClass;
+        }
+
+        try {
+            Class childClazz = this.getClass();
+            Class parentClazz;
+            while (true) {
+                parentClazz = childClazz.getSuperclass();
+                if (parentClazz == ModuleDataNode.class) {
+                    break;
+                } else {
+                    childClazz = parentClazz;
+                }
+            }
+
+            Type type = childClazz.getGenericSuperclass();
+            Type[] generics = ((ParameterizedType) type).getActualTypeArguments();
+            mViewHolderClass = (Class<V>) (generics[1]);
+        } catch (Exception e) {
+            mViewHolderClass = null;
+        } finally {
+            return mViewHolderClass;
+        }
+    }
 }

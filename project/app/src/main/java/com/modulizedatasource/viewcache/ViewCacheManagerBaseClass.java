@@ -2,10 +2,11 @@ package com.modulizedatasource.viewcache;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.tools.LogUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,24 +46,16 @@ public abstract class ViewCacheManagerBaseClass {
     public BaseViewHolder getViewHolder(final String key) {
         BaseViewHolder viewHolder = null;
         if (mViewCacheTypeMap.get(key) == null) {
-            Log.e("tony", "ViewCache get TypeMap not find key: " + key);
+            LogUtil.printExceptionLog("ViewCache get TypeMap not find key: " + key);
             return viewHolder;
         }
 
         final List<BaseViewHolder> viewHolderList = mViewHolderCacheMap.get(key);
         viewHolder = findViewHolderInCacheList(viewHolderList);
 
-        Log.e("tony", "ViewCache get key: " + key +
-                " size: " + (viewHolderList == null ? "null" : viewHolderList.size()));
-
-        boolean isFromCache = false;
         if (viewHolder == null) {
             viewHolder = createNewViewHolder(mViewCacheTypeMap.get(key));
-        } else {
-            isFromCache = true;
         }
-
-        Log.e("tony", "Load " + key + " from " + (isFromCache ? "cache" : "new"));
 
         return viewHolder;
     }
@@ -84,7 +77,6 @@ public abstract class ViewCacheManagerBaseClass {
     public void recycleView(final View view) {
         if (view == null ||
                 !(view.getTag() instanceof BaseViewHolder)) {
-            Log.e("tony", "ViewCache tag not BaseViewHolder" + this.getClass().getSimpleName());
             return;
         }
 
@@ -92,7 +84,7 @@ public abstract class ViewCacheManagerBaseClass {
         final String key = viewHolder.getClass().getName();
         if (TextUtils.isEmpty(key) ||
                 mViewCacheTypeMap.get(key) == null) {
-            Log.e("tony", "ViewCache put TypeMap not find key: " + key);
+            LogUtil.printExceptionLog("ViewCache put TypeMap not find key: " + key);
             return;
         }
 
@@ -106,7 +98,6 @@ public abstract class ViewCacheManagerBaseClass {
         }
 
         viewHolder.recycleView(cacheList);
-        Log.e("tony", "ViewCache put key: " + key + " size: " + cacheList.size());
     }
 
     private boolean isInited() {
@@ -122,8 +113,7 @@ public abstract class ViewCacheManagerBaseClass {
             viewHolder.init(mContext, mLayoutInflater);
             viewHolder.build();
         } catch (Exception e) {
-            Log.e("tony", "ViewCache createNewViewHolder exception");
-            e.printStackTrace();
+            LogUtil.printExceptionLog("createNewViewHolder exception");
             viewHolder = null;
         } finally {
             return viewHolder;

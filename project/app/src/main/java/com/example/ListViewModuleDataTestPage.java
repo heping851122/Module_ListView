@@ -12,6 +12,7 @@ import com.example.interfacelibrary.ModuleEventListener;
 import com.example.module1.FirstModuleNode;
 import com.example.module2.MiddleModuleNode;
 import com.example.module3.LastModuleNode;
+import com.example.module4.LastModuleNode2;
 import com.example.rootmodule.RootNode;
 import com.modulizedatasource.model.PageContextModel;
 import com.example.tony.modulelistview.R;
@@ -20,6 +21,7 @@ import com.modulizedatasource.datamodule.ModuleDataAdapter;
 import com.modulizedatasource.datamodule.ModuleDataGroupNode;
 import com.modulizedatasource.datamodule.ModuleDataNode;
 import com.modulizedatasource.view.ListViewWithCoveredView;
+import com.tools.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,7 @@ public class ListViewModuleDataTestPage extends Activity implements ModuleDataGr
         mPageNodeList.add(FirstModuleNode.class);
         mPageNodeList.add(MiddleModuleNode.class);
         mPageNodeList.add(LastModuleNode.class);
+        mPageNodeList.add(LastModuleNode2.class);
     }
 
     @Override
@@ -81,7 +84,7 @@ public class ListViewModuleDataTestPage extends Activity implements ModuleDataGr
                 mPageNodeInstanceList.add(module);
                 mTopParent.addChild(module);
             } catch (Exception e) {
-                Log.e("tony", "ModuleDataNode newInstance fail " + clazz.getName() + " " + e.getMessage());
+                LogUtil.printExceptionLog("ModuleDataNode newInstance fail " + clazz.getName() + " " + e.getMessage());
             }
         }
     }
